@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import GrowmoLogo from '../logos/growmo-favicon.png';
+import GrowmoLogo from '../logos/growmo.png';
 import CUGDLLogo from '../logos/Logos CUGDL-06.png';
 
 const CAREERS = [

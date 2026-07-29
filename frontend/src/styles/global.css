@@ -79,7 +79,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 68px;
+  min-height: 84px;
   padding: 0 24px;
 }
 
@@ -103,11 +103,10 @@ body {
 }
 
 .brand-icon-img {
-  width: 40px;
-  height: 40px;
+  width: auto;
+  height: 56px;
   object-fit: contain;
   display: block;
-  border-radius: 10px;
 }
 
 .brand-text {
@@ -117,12 +116,12 @@ body {
 }
 
 .brand-main {
-  font-size: 1rem;
+  font-size: 1.08rem;
   font-weight: 700;
 }
 
 .brand-sub {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
   letter-spacing: 0;
 }
@@ -140,6 +139,38 @@ body {
 .btn-nav:hover {
   border-color: var(--accent-cyan);
   color: var(--accent-cyan);
+}
+
+@media (max-width: 900px) {
+  .nav-row {
+    min-height: 76px;
+  }
+
+  .brand-icon-img {
+    height: 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-row {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .brand {
+    width: 100%;
+  }
+
+  .brand-icon-img {
+    height: 44px;
+  }
+
+  .nav-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }
 
 /* === TIPOGRAFÍA === */
