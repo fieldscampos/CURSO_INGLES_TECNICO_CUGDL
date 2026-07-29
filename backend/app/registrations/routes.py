@@ -31,7 +31,7 @@ def status(user_id: str = Depends(get_current_user_id)) -> PreRegistrationOut:
 @router.post("/pre-registro", response_model=PreRegistrationOut, status_code=201)
 def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
     """
-    Endpoint público para el pre-registro del curso de Python.
+    Endpoint publico para el pre-registro del curso de ingles tecnico.
     No requiere autenticación.
     Guarda los datos en Supabase.
     """
@@ -56,14 +56,15 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
             "phone_whatsapp": data.phone_whatsapp,
             "career": data.career,
             "semester": data.semester,
-            "programming_level": data.programming_level,
-            "python_experience": data.python_experience,
-            "operating_system": data.operating_system,
+            "technical_background": data.technical_background,
+            "english_level": data.english_level,
+            "english_exposure": data.english_exposure,
+            "speaking_confidence": data.speaking_confidence,
+            "learning_goal": data.learning_goal,
             "has_laptop": data.has_laptop,
             "preferred_days": data.preferred_days,
             "preferred_schedule": data.preferred_schedule,
             "motivation": data.motivation,
-            "shirt_size": data.shirt_size,
             "attendance_commitment": data.attendance_commitment,
             "payment_option": data.payment_option,
             "scholarship_reason": data.scholarship_reason if data.payment_option == "scholarship" else None
@@ -264,4 +265,3 @@ def scholarship_enrollment(data: dict):
             status_code=500,
             detail=f"Error al procesar la solicitud: {str(e)}"
         )
-

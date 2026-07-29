@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import GDGLogo from '../logos/GDG Guadalajara (1).png';
+import GrowmoLogo from '../logos/growmo-favicon.png';
 import CUGDLLogo from '../logos/Logos CUGDL-06.png';
 
 const CAREERS = [
@@ -15,9 +15,33 @@ const CAREERS = [
 
 const SEMESTERS = ['1ro', '2do', '3ro', '4to'];
 
-const PROGRAMMING_LEVELS = ['Nulo', 'Básico', 'Intermedio', 'Avanzado'];
+const TECHNICAL_BACKGROUNDS = [
+  'Aun no tengo experiencia tecnica',
+  'Tengo bases escolares o cursos introductorios',
+  'Ya he hecho proyectos, practicas o freelance',
+  'Ya colaboro o trabajo en un entorno tech'
+];
 
-const SHIRT_SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+const ENGLISH_LEVELS = [
+  'Casi nulo',
+  'Basico',
+  'Basico alto',
+  'Intermedio'
+];
+
+const ENGLISH_EXPOSURES = [
+  'Nunca he usado ingles tecnico',
+  'Solo lo he visto en videos, tutoriales o documentacion',
+  'He tomado clases o cursos, pero casi no lo hablo',
+  'Ya lo he usado en entrevistas, clases, proyectos o trabajo'
+];
+
+const SPEAKING_CONFIDENCE_LEVELS = [
+  'Me cuesta mucho hablar aunque entienda algunas palabras',
+  'Puedo decir frases sueltas y presentarme un poco',
+  'Puedo mantener una conversacion corta con pausas',
+  'Ya puedo explicar ideas tecnicas con cierta seguridad'
+];
 
 export default function PreRegistrationPage() {
   const [formData, setFormData] = useState({
@@ -28,14 +52,15 @@ export default function PreRegistrationPage() {
     phoneWhatsapp: '',
     career: '',
     semester: '',
-    programmingLevel: '',
-    pythonExperience: false,
-    operatingSystem: '',
+    technicalBackground: '',
+    englishLevel: '',
+    englishExposure: '',
+    speakingConfidence: '',
+    learningGoal: '',
     hasLaptop: false,
     preferredDays: '', // 'weekdays', 'weekend', o 'both'
     preferredSchedule: '', // 'afternoon', 'evening', o 'both'
     motivation: '',
-    shirtSize: '',
     attendanceCommitment: false,
     paymentOption: '', // 'payment' o 'scholarship'
     scholarshipReason: ''
@@ -92,13 +117,28 @@ export default function PreRegistrationPage() {
       return false;
     }
 
-    if (!formData.programmingLevel) {
-      setError('El nivel de experiencia es requerido');
+    if (!formData.technicalBackground) {
+      setError('El contexto tecnico es requerido');
       return false;
     }
 
-    if (!formData.operatingSystem) {
-      setError('El sistema operativo es requerido');
+    if (!formData.englishLevel) {
+      setError('El nivel actual de ingles es requerido');
+      return false;
+    }
+
+    if (!formData.englishExposure) {
+      setError('La experiencia previa con ingles tecnico es requerida');
+      return false;
+    }
+
+    if (!formData.speakingConfidence) {
+      setError('Tu nivel de confianza para hablar es requerido');
+      return false;
+    }
+
+    if (!formData.learningGoal.trim()) {
+      setError('Tu objetivo principal en el curso es requerido');
       return false;
     }
 
@@ -114,11 +154,6 @@ export default function PreRegistrationPage() {
 
     if (!formData.motivation.trim()) {
       setError('La motivación es requerida');
-      return false;
-    }
-
-    if (!formData.shirtSize) {
-      setError('La talla de playera es requerida');
       return false;
     }
 
@@ -159,14 +194,15 @@ export default function PreRegistrationPage() {
         phone_whatsapp: formData.phoneWhatsapp || null,
         career: formData.career,
         semester: formData.semester,
-        programming_level: formData.programmingLevel,
-        python_experience: formData.pythonExperience,
-        operating_system: formData.operatingSystem,
+        technical_background: formData.technicalBackground,
+        english_level: formData.englishLevel,
+        english_exposure: formData.englishExposure,
+        speaking_confidence: formData.speakingConfidence,
+        learning_goal: formData.learningGoal,
         has_laptop: formData.hasLaptop,
         preferred_days: formData.preferredDays,
         preferred_schedule: formData.preferredSchedule,
         motivation: formData.motivation,
-        shirt_size: formData.shirtSize,
         attendance_commitment: formData.attendanceCommitment,
         payment_option: formData.paymentOption,
         scholarship_reason: formData.paymentOption === 'scholarship' ? formData.scholarshipReason : null
@@ -203,7 +239,7 @@ export default function PreRegistrationPage() {
       <div className="container narrow">
         <div className="preregistration-header">
           <div className="logos-row">
-            <img src={GDGLogo} alt="GDG Guadalajara" className="logo" />
+            <img src={GrowmoLogo} alt="Growmo Tech" className="logo" />
             <span className="separator">×</span>
             <img src={CUGDLLogo} alt="CUGDL" className="logo" />
           </div>
@@ -328,63 +364,86 @@ export default function PreRegistrationPage() {
             </div>
           </section>
 
-          {/* Sección 3: Perfil Técnico y Conocimientos Previos */}
+          {/* Sección 3: Perfil Tecnico y Conocimientos Previos */}
           <section className="form-section">
             <h2>Perfil Tecnico y Punto de Partida</h2>
-            <p className="section-description">Esto nos ayudara a entender tu contexto tecnico actual y el punto de partida ideal para el curso.</p>
+            <p className="section-description">Esto ayudara a los companeros de Growmo a construir mejor el ritmo y el enfoque semana a semana.</p>
 
             <div className="form-group">
-              <label htmlFor="programmingLevel">¿Cual es tu nivel de experiencia previa en programacion? *</label>
+              <label htmlFor="technicalBackground">¿Cual es hoy tu contexto tecnico? *</label>
               <select
-                id="programmingLevel"
-                name="programmingLevel"
-                value={formData.programmingLevel}
+                id="technicalBackground"
+                name="technicalBackground"
+                value={formData.technicalBackground}
                 onChange={handleChange}
                 required
               >
                 <option value="">-- Selecciona --</option>
-                {PROGRAMMING_LEVELS.map(level => (
+                {TECHNICAL_BACKGROUNDS.map(level => (
                   <option key={level} value={level}>{level}</option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label>¿Ya has tenido contacto con ingles tecnico en cursos, videos, entrevistas o trabajo?</label>
-              <div className="radio-group">
-                <label>
-                  <input
-                    type="radio"
-                    checked={formData.pythonExperience === true}
-                    onChange={() => setFormData(prev => ({ ...prev, pythonExperience: true }))}
-                  />
-                  Si
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    checked={formData.pythonExperience === false}
-                    onChange={() => setFormData(prev => ({ ...prev, pythonExperience: false }))}
-                  />
-                  No
-                </label>
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="operatingSystem">Sistema operativo que utilizas en tu computadora principal *</label>
+              <label htmlFor="englishLevel">¿Como describirias tu nivel actual de ingles? *</label>
               <select
-                id="operatingSystem"
-                name="operatingSystem"
-                value={formData.operatingSystem}
+                id="englishLevel"
+                name="englishLevel"
+                value={formData.englishLevel}
                 onChange={handleChange}
                 required
               >
                 <option value="">-- Selecciona --</option>
-                <option value="Windows">Windows</option>
-                <option value="macOS">macOS</option>
-                <option value="Linux">Linux</option>
+                {ENGLISH_LEVELS.map((level) => (
+                  <option key={level} value={level}>{level}</option>
+                ))}
               </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="englishExposure">¿Que tanto contacto has tenido con ingles tecnico? *</label>
+              <select
+                id="englishExposure"
+                name="englishExposure"
+                value={formData.englishExposure}
+                onChange={handleChange}
+                required
+              >
+                <option value="">-- Selecciona --</option>
+                {ENGLISH_EXPOSURES.map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="speakingConfidence">¿Que tan comodo o comoda te sientes hablando ingles hoy? *</label>
+              <select
+                id="speakingConfidence"
+                name="speakingConfidence"
+                value={formData.speakingConfidence}
+                onChange={handleChange}
+                required
+              >
+                <option value="">-- Selecciona --</option>
+                {SPEAKING_CONFIDENCE_LEVELS.map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="learningGoal">¿Que te gustaria poder hacer en ingles tecnico al terminar estas 5 semanas? *</label>
+              <textarea
+                id="learningGoal"
+                name="learningGoal"
+                value={formData.learningGoal}
+                onChange={handleChange}
+                rows={4}
+                placeholder="Por ejemplo: presentarme mejor, participar en standups, entender documentacion o hablar de mis proyectos."
+                required
+              />
             </div>
           </section>
 
@@ -483,33 +542,16 @@ export default function PreRegistrationPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="motivation">¿Por que te interesa inscribirte a este curso de ingles tecnico? *</label>
+              <label htmlFor="motivation">¿Por que te interesa inscribirte a este curso de ingles tecnico y conversacion tech? *</label>
               <textarea
                 id="motivation"
                 name="motivation"
                 value={formData.motivation}
                 onChange={handleChange}
                 rows={4}
-                placeholder="Cuentanos que te gustaria lograr con este curso..."
+                placeholder="Cuentanos por que este curso seria valioso para tu crecimiento academico o profesional."
                 required
               />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="shirtSize">Talla de playera (Corte Unisex/Mens) *</label>
-              <select
-                id="shirtSize"
-                name="shirtSize"
-                value={formData.shirtSize}
-                onChange={handleChange}
-                required
-              >
-                <option value="">-- Selecciona --</option>
-                {SHIRT_SIZES.map(size => (
-                  <option key={size} value={size}>{size}</option>
-                ))}
-              </select>
-              <small>Esta informacion es unicamente para fines logisticos de materiales o kits del programa.</small>
             </div>
 
             <div className="form-group">
@@ -532,7 +574,7 @@ export default function PreRegistrationPage() {
             
             <div className="section-intro">
               <p className="intro-paragraph">
-                Este curso es posible gracias a la colaboracion entre CUGDL y growmo.tech. La cuota de recuperacion de <strong>$100 MXN</strong> nos ayuda a cubrir operacion, materiales y acompanamiento del programa.
+                Este taller es posible gracias a la colaboracion voluntaria de profesionales de <strong>Growmo Tech</strong>. La cuota de recuperacion de <strong>$200 MXN</strong> nos ayuda a cubrir la operacion y el acompanamiento del programa.
               </p>
               <p className="intro-paragraph">
                 En apoyo a la comunidad estudiantil, se contemplara un numero limitado de becas del 100% para alumnos con necesidad economica demostrable y alto compromiso con el curso.
@@ -550,7 +592,7 @@ export default function PreRegistrationPage() {
                     onChange={() => setFormData(prev => ({ ...prev, paymentOption: 'payment' }))}
                   />
                   <span className="option-title">Deseo realizar el pago de la cuota de recuperacion</span>
-                  <span className="option-description">($100 MXN) Contribuyo a la operacion del curso y aseguro mi lugar tras el pre-registro.</span>
+                  <span className="option-description">($200 MXN) Contribuyo a la operacion del curso y aseguro mi lugar tras el pre-registro.</span>
                 </label>
                 <label>
                   <input

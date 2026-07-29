@@ -174,23 +174,6 @@ export default function TechnicalEnglishLandingPage() {
         </div>
       </section>
 
-      <section className="english-cta-strip">
-        <div className="container english-cta-inner">
-          <div>
-            <span className="english-eyebrow">Siguiente paso</span>
-            <h2>Empezamos con el preregistro de la primera generacion</h2>
-            <p>
-              Esta landing ya presenta con claridad la colaboracion con growmo.tech y el enfoque
-              del curso. Desde aqui podemos crecer el flujo completo de preregistro, seguimiento y
-              operacion sobre la misma base del proyecto.
-            </p>
-          </div>
-          <Link to="/preregistro" className="btn btn-secondary btn-large">
-            Ir al pre-registro
-          </Link>
-        </div>
-      </section>
-
       <footer className="footer english-footer">
         <div className="container">
           <p>© 2026 CUGDL × growmo.tech. Curso Intensivo de Ingles Tecnico.</p>
