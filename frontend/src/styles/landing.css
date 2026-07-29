@@ -73,6 +73,56 @@
   align-items: center;
 }
 
+.english-branding {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 22px;
+  margin-bottom: 24px;
+}
+
+.english-brand-primary,
+.english-brand-collab {
+  display: flex;
+  align-items: center;
+}
+
+.english-indigo-logo {
+  height: 104px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 10px 24px rgba(15, 106, 191, 0.16));
+}
+
+.english-brand-collab {
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 106, 191, 0.12);
+  box-shadow: 0 12px 30px rgba(25, 52, 89, 0.08);
+}
+
+.english-partner-logo {
+  width: auto;
+  display: block;
+}
+
+.english-partner-cugdl {
+  height: 46px;
+}
+
+.english-partner-growmo {
+  height: 42px;
+}
+
+.english-brand-separator {
+  color: #0f6abf;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
 .english-eyebrow {
   display: inline-block;
   margin-bottom: 18px;
@@ -292,6 +342,27 @@
 @media (max-width: 640px) {
   .english-hero {
     padding-top: 56px;
+  }
+
+  .english-branding {
+    align-items: flex-start;
+  }
+
+  .english-indigo-logo {
+    height: 82px;
+  }
+
+  .english-brand-collab {
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .english-partner-cugdl {
+    height: 38px;
+  }
+
+  .english-partner-growmo {
+    height: 34px;
   }
 
   .english-panel-card,

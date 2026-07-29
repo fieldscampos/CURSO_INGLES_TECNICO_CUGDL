@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../logos/growmo-favicon.png';
+import logo from '../logos/growmo.png';
 
 export default function Header() {
   return (

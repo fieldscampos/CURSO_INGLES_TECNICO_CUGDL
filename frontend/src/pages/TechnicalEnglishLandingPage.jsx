@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom';
+import CUGDLLogo from '../logos/Logos CUGDL-06.png';
+import GrowmoLogo from '../logos/growmo.png';
+import IndigoLogo from '../logos/indigo.png';
 import {
   ArrowRightIcon,
   BookIcon,
@@ -54,6 +57,16 @@ export default function TechnicalEnglishLandingPage() {
       <section className="english-hero">
         <div className="container english-hero-grid">
           <div className="english-copy">
+            <div className="english-branding">
+              <div className="english-brand-primary">
+                <img src={IndigoLogo} alt="Movimiento Indigo" className="english-indigo-logo" />
+              </div>
+              <div className="english-brand-collab">
+                <img src={CUGDLLogo} alt="CUGDL" className="english-partner-logo english-partner-cugdl" />
+                <span className="english-brand-separator">×</span>
+                <img src={GrowmoLogo} alt="Growmo Tech" className="english-partner-logo english-partner-growmo" />
+              </div>
+            </div>
             <span className="english-eyebrow">CUGDL × growmo.tech</span>
             <h1>
               Curso Intensivo de <span>Ingles Tecnico</span> para empezar a conversar en tech

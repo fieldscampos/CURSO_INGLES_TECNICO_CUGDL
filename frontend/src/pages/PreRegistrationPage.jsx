@@ -16,10 +16,10 @@ const CAREERS = [
 const SEMESTERS = ['1ro', '2do', '3ro', '4to'];
 
 const TECHNICAL_BACKGROUNDS = [
-  'Aun no tengo experiencia tecnica',
-  'Tengo bases escolares o cursos introductorios',
-  'Ya he hecho proyectos, practicas o freelance',
-  'Ya colaboro o trabajo en un entorno tech'
+  'Quiero empezar a entender ingles tecnico aunque aun voy iniciando en tecnologia',
+  'Estoy estudiando o practicando temas tech y quiero empezar a conversar sobre ellos',
+  'Ya hago proyectos o practicas y quiero explicar mejor mi trabajo en ingles',
+  'Ya colaboro en entornos tech y quiero ganar fluidez al hablar de temas tecnicos'
 ];
 
 const ENGLISH_LEVELS = [
@@ -370,7 +370,7 @@ export default function PreRegistrationPage() {
             <p className="section-description">Esto ayudara a los companeros de Growmo a construir mejor el ritmo y el enfoque semana a semana.</p>
 
             <div className="form-group">
-              <label htmlFor="technicalBackground">¿Cual es hoy tu contexto tecnico? *</label>
+              <label htmlFor="technicalBackground">¿En que contexto te gustaria usar o practicar ingles tecnico? *</label>
               <select
                 id="technicalBackground"
                 name="technicalBackground"
