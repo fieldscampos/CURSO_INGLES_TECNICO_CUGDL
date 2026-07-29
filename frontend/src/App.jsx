@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
-import LandingPage from './pages/LandingPage';
 import TechnicalEnglishLandingPage from './pages/TechnicalEnglishLandingPage';
 import PreRegistrationPage from './pages/PreRegistrationPage';
 import AcademicRegistrationPage from './pages/AcademicRegistrationPage';
@@ -14,7 +13,7 @@ export default function App() {
     <div>
       <Header />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<TechnicalEnglishLandingPage />} />
         <Route path="/ingles-tecnico" element={<TechnicalEnglishLandingPage />} />
         <Route path="/preregistro" element={<PreRegistrationPage />} />
         <Route path="/registro-academico" element={<AcademicRegistrationPage />} />
@@ -23,7 +22,7 @@ export default function App() {
         <Route path="/encuesta-curso" element={<CourseSurveyPage />} />
         <Route path="/encuesta-curso/*" element={<CourseSurveyPage />} />
         <Route path="/admin/pagos" element={<AdminPaymentDashboard />} />
-        <Route path="*" element={<LandingPage />} />
+        <Route path="*" element={<TechnicalEnglishLandingPage />} />
       </Routes>
     </div>
   );

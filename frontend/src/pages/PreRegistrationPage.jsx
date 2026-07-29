@@ -187,8 +187,8 @@ export default function PreRegistrationPage() {
         <div className="container narrow">
           <div className="success-message">
             <h1>¡Pre-registro completado!</h1>
-            <p>Gracias por tu interés en el Curso de Python del GDG Guadalajara × CUGDL.</p>
-            <p>Nos pondremos en contacto pronto con más detalles sobre el curso.</p>
+            <p>Gracias por tu interes en el Curso Intensivo de Ingles Tecnico de CUGDL x growmo.tech.</p>
+            <p>Nos pondremos en contacto pronto con mas detalles sobre el inicio del programa.</p>
             <Link to="/" className="btn btn-primary">
               Volver al Inicio
             </Link>
@@ -207,9 +207,9 @@ export default function PreRegistrationPage() {
             <span className="separator">×</span>
             <img src={CUGDLLogo} alt="CUGDL" className="logo" />
           </div>
-          <h1>Pre-Registro: Curso de Python</h1>
+          <h1>Pre-Registro: Curso Intensivo de Ingles Tecnico</h1>
           <p className="intro-text">
-            ¡Hola! Te damos la bienvenida al pre-registro para el Curso de Python organizado por el CUGDL en colaboración con el GDG Guadalajara.
+            Te damos la bienvenida al pre-registro del curso intensivo de 5 semanas creado por CUGDL en colaboracion con growmo.tech para ayudar a alumnos a empezar a conversar ingles tecnico con mas confianza.
           </p>
         </div>
 
@@ -330,11 +330,11 @@ export default function PreRegistrationPage() {
 
           {/* Sección 3: Perfil Técnico y Conocimientos Previos */}
           <section className="form-section">
-            <h2>Perfil Técnico y Conocimientos Previos</h2>
-            <p className="section-description">Esto le ayudará a los ponentes del GDG a saber desde dónde empezar a explicar.</p>
+            <h2>Perfil Tecnico y Punto de Partida</h2>
+            <p className="section-description">Esto nos ayudara a entender tu contexto tecnico actual y el punto de partida ideal para el curso.</p>
 
             <div className="form-group">
-              <label htmlFor="programmingLevel">¿Cuál es tu nivel de experiencia previa en programación? *</label>
+              <label htmlFor="programmingLevel">¿Cual es tu nivel de experiencia previa en programacion? *</label>
               <select
                 id="programmingLevel"
                 name="programmingLevel"
@@ -350,7 +350,7 @@ export default function PreRegistrationPage() {
             </div>
 
             <div className="form-group">
-              <label>¿Has utilizado el lenguaje Python anteriormente?</label>
+              <label>¿Ya has tenido contacto con ingles tecnico en cursos, videos, entrevistas o trabajo?</label>
               <div className="radio-group">
                 <label>
                   <input
@@ -358,7 +358,7 @@ export default function PreRegistrationPage() {
                     checked={formData.pythonExperience === true}
                     onChange={() => setFormData(prev => ({ ...prev, pythonExperience: true }))}
                   />
-                  Sí
+                  Si
                 </label>
                 <label>
                   <input
@@ -390,11 +390,11 @@ export default function PreRegistrationPage() {
 
           {/* Sección 4: Logística y Compromiso */}
           <section className="form-section">
-            <h2>Logística y Compromiso</h2>
-            <p className="section-description">Vital para asegurar que los asistentes tengan las herramientas necesarias y no dejen el lugar vacío.</p>
+            <h2>Logistica y Compromiso</h2>
+            <p className="section-description">Esto nos ayuda a acomodar mejor la cohorte y a priorizar a quienes realmente podran aprovechar el intensivo.</p>
 
             <div className="form-group">
-              <label>¿Cuentas con una computadora portátil propia que puedas usar en las sesiones?</label>
+              <label>¿Cuentas con una computadora portatil propia que puedas usar en las sesiones?</label>
               <div className="radio-group">
                 <label>
                   <input
@@ -413,11 +413,11 @@ export default function PreRegistrationPage() {
                   No
                 </label>
               </div>
-              <small>Es clave si el taller es tipo hands-on y no hay laboratorios disponibles</small>
+              <small>Es clave para practicar con recursos, ejercicios y materiales durante el curso.</small>
             </div>
 
             <div className="form-group">
-              <label>¿Qué días tienes preferencia/disponibilidad para asistir al curso? *</label>
+              <label>¿Que dias tienes preferencia o disponibilidad para asistir al curso? *</label>
               <div className="checkbox-group">
                 <label>
                   <input
@@ -450,7 +450,7 @@ export default function PreRegistrationPage() {
             </div>
 
             <div className="form-group">
-              <label>¿En qué horario prefieres que se impartan las sesiones? *</label>
+              <label>¿En que horario prefieres que se impartan las sesiones? *</label>
               <div className="checkbox-group">
                 <label>
                   <input
@@ -483,14 +483,14 @@ export default function PreRegistrationPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="motivation">¿Por qué te interesa inscribirte a este curso de Python? *</label>
+              <label htmlFor="motivation">¿Por que te interesa inscribirte a este curso de ingles tecnico? *</label>
               <textarea
                 id="motivation"
                 name="motivation"
                 value={formData.motivation}
                 onChange={handleChange}
                 rows={4}
-                placeholder="Cuéntanos sobre tu interés..."
+                placeholder="Cuentanos que te gustaria lograr con este curso..."
                 required
               />
             </div>
@@ -509,7 +509,7 @@ export default function PreRegistrationPage() {
                   <option key={size} value={size}>{size}</option>
                 ))}
               </select>
-              <small>Esta información es únicamente para fines logísticos de los kits conmemorativos.</small>
+              <small>Esta informacion es unicamente para fines logisticos de materiales o kits del programa.</small>
             </div>
 
             <div className="form-group">
@@ -521,7 +521,7 @@ export default function PreRegistrationPage() {
                   onChange={handleChange}
                   required
                 />
-                Me comprometo a asistir a las sesiones programadas y cumplir con el código de conducta de la comunidad *
+                Me comprometo a asistir a las sesiones programadas y cumplir con el codigo de conducta de la comunidad *
               </label>
             </div>
           </section>
@@ -532,15 +532,15 @@ export default function PreRegistrationPage() {
             
             <div className="section-intro">
               <p className="intro-paragraph">
-                Este taller es posible gracias a la colaboración voluntaria de profesionales del GDG Guadalajara. La cuota de recuperación de <strong>$100 MXN</strong> se destina íntegramente a cubrir los honorarios y viáticos de los talleristas, reconociendo su tiempo y expertise.
+                Este curso es posible gracias a la colaboracion entre CUGDL y growmo.tech. La cuota de recuperacion de <strong>$100 MXN</strong> nos ayuda a cubrir operacion, materiales y acompanamiento del programa.
               </p>
               <p className="intro-paragraph">
-                En apoyo a nuestra comunidad estudiantil, el CUGDL ofrecerá un número limitado de becas del 100%. Estas becas están reservadas exclusivamente para estudiantes que, por su situación económica actual, les resulte imposible cubrir la cuota y que demuestren un alto compromiso con el aprovechamiento del curso.
+                En apoyo a la comunidad estudiantil, se contemplara un numero limitado de becas del 100% para alumnos con necesidad economica demostrable y alto compromiso con el curso.
               </p>
             </div>
 
             <div className="form-group">
-              <label>Situación para la inscripción (Selecciona una) *</label>
+              <label>Situacion para la inscripcion (Selecciona una) *</label>
               <div className="checkbox-group">
                 <label>
                   <input
@@ -549,8 +549,8 @@ export default function PreRegistrationPage() {
                     checked={formData.paymentOption === 'payment'}
                     onChange={() => setFormData(prev => ({ ...prev, paymentOption: 'payment' }))}
                   />
-                  <span className="option-title">Deseo realizar el pago de la cuota de recuperación</span>
-                  <span className="option-description">($100 MXN) Contribuyo al pago de los talleristas, mi merch del curso y aseguro mi lugar tras el pre-registro.</span>
+                  <span className="option-title">Deseo realizar el pago de la cuota de recuperacion</span>
+                  <span className="option-description">($100 MXN) Contribuyo a la operacion del curso y aseguro mi lugar tras el pre-registro.</span>
                 </label>
                 <label>
                   <input
@@ -560,33 +560,33 @@ export default function PreRegistrationPage() {
                     onChange={() => setFormData(prev => ({ ...prev, paymentOption: 'scholarship' }))}
                   />
                   <span className="option-title">Solicito ser candidato(a) a una beca del 100%</span>
-                  <span className="option-description">Entiendo que las becas son limitadas y que mi solicitud pasará por un proceso de revisión y selección basado en mi exposición de motivos. Esto no asegura mi lugar en el curso.</span>
+                  <span className="option-description">Entiendo que las becas son limitadas y que mi solicitud pasara por un proceso de revision y seleccion basado en mi exposicion de motivos. Esto no asegura mi lugar en el curso.</span>
                 </label>
               </div>
             </div>
 
             {formData.paymentOption === 'scholarship' && (
               <div className="form-group">
-                <label htmlFor="scholarshipReason">Exposición de motivos para solicitud de beca *</label>
+                <label htmlFor="scholarshipReason">Exposicion de motivos para solicitud de beca *</label>
                 <textarea
                   id="scholarshipReason"
                   name="scholarshipReason"
                   value={formData.scholarshipReason}
                   onChange={handleChange}
                   rows={5}
-                  placeholder="Explica brevemente tu situación actual y por qué este apoyo es fundamental para que puedas cursar el taller. Las becas se asignarán priorizando el compromiso académico y la necesidad económica demostrada."
+                  placeholder="Explica brevemente tu situacion actual y por que este apoyo es importante para que puedas cursar el programa. Las becas se asignaran priorizando compromiso y necesidad economica demostrada."
                   required={formData.paymentOption === 'scholarship'}
                 />
-                <small>La información proporcionada en esta sección será tratada con estricta confidencialidad y solo se utilizará para el proceso de selección de becas.</small>
+                <small>La informacion proporcionada en esta seccion sera tratada con confidencialidad y solo se utilizara para el proceso de seleccion de becas.</small>
               </div>
             )}
 
             <div className="form-notices">
               <p className="notice">
-                <strong>Importante:</strong> El pre-registro no garantiza un lugar definitivo en el curso. La confirmación final se realizará posteriormente, una vez que se hayan revisado las solicitudes y se hayan asignado las becas correspondientes. Agradecemos tu comprensión y paciencia durante este proceso.
+                <strong>Importante:</strong> El pre-registro no garantiza un lugar definitivo en el curso. La confirmacion final se realizara posteriormente, una vez revisadas las solicitudes y asignadas las becas correspondientes.
               </p>
               <p className="notice">
-                El comité organizador contactará a los seleccionados para la beca vía correo electrónico institucional para validar su situación y compromiso, y para proporcionar detalles sobre el proceso de pago o asignación de becas. Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en contactarnos.
+                El equipo organizador contactara a quienes avancen en el proceso via correo institucional para compartir los siguientes pasos, detalles de pago o asignacion de becas.
               </p>
             </div>
           </section>
