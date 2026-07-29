@@ -1,0 +1,13 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[context.production.environment]
+  VITE_API_URL = "https://curso-python-gdg-api-production.up.railway.app/api"
+  VITE_GOOGLE_CLIENT_ID = "840919049989-boq9amar2telcevamdb686stmvtbej88.apps.googleusercontent.com"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

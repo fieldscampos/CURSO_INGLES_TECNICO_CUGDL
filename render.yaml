@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: curso-python-gdg-api
+    env: docker
+    region: oregon
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    autoDeploy: true
+    healthCheckPath: /health
+    healthCheckTimeout: 30
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: BACKEND_CORS_ORIGINS
+        value: https://curso-python-gdg.vercel.app
+      - key: PYTHON_VERSION
+        value: "3.11"
+      # Secrets (define en Render dashboard):
+      # - SUPABASE_URL
+      # - SUPABASE_KEY
+
+webhooks:
+  - type: github
+    events: push

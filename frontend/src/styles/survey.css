@@ -1,0 +1,133 @@
+.survey-page {
+  padding: 56px 0 80px;
+  background:
+    radial-gradient(circle at top left, rgba(0, 102, 204, 0.06), transparent 38%),
+    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+.survey-page .narrow {
+  max-width: 900px;
+}
+
+.survey-hero {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.survey-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.survey-hero h1 {
+  margin: 0;
+}
+
+.survey-hero p {
+  max-width: 760px;
+}
+
+.survey-form {
+  display: grid;
+  gap: 24px;
+}
+
+.survey-form-header {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.survey-form-header h2 {
+  margin-bottom: 8px;
+}
+
+.survey-form-header p {
+  margin: 0;
+}
+
+.survey-email-pill {
+  margin-top: 18px;
+}
+
+.survey-rating-list {
+  display: grid;
+  gap: 18px;
+}
+
+.survey-rating-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 18px;
+  background: var(--bg-primary);
+  display: grid;
+  gap: 14px;
+}
+
+.survey-rating-copy h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.survey-rating-copy p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.survey-rating-scale {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rating-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.rating-option input {
+  display: none;
+}
+
+.rating-option.selected {
+  border-color: var(--accent-blue);
+  background: rgba(0, 102, 204, 0.08);
+  color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.12);
+}
+
+.survey-actions {
+  justify-content: space-between;
+}
+
+.survey-success {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .survey-rating-scale {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .survey-actions {
+    flex-direction: column;
+  }
+
+  .survey-actions .btn {
+    width: 100%;
+  }
+}
