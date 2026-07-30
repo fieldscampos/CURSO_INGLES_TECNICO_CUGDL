@@ -35,18 +35,29 @@ app.add_middleware(
 # Agregar middleware HTTP personalizado SEGUNDO (será ejecutado PRIMERO)
 @app.middleware("http")
 async def cors_middleware(request: Request, call_next):
-    """Handle CORS preflight requests before validation."""
+    """Handle CORS preflight requests and normalize CORS headers on responses."""
+    request_origin = request.headers.get("origin")
+    allowed_origin = None
+    if request_origin and ("*" in cors_origins or request_origin in cors_origins):
+        allowed_origin = request_origin
+
     if request.method == "OPTIONS":
         return Response(
             status_code=200,
             headers={
-                "Access-Control-Allow-Origin": request.headers.get("origin", "*"),
+                "Access-Control-Allow-Origin": allowed_origin or request.headers.get("origin", "*"),
                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Credentials": "true",
                 "Access-Control-Max-Age": "3600",
             },
         )
+
     response = await call_next(request)
+    if allowed_origin:
+        response.headers["Access-Control-Allow-Origin"] = allowed_origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Vary"] = "Origin"
     return response
 
 
@@ -98,4 +109,3 @@ app.include_router(payment_router, prefix="/api/registrations", tags=["payments"
 app.include_router(admin_payment_router, prefix="/api", tags=["admin-payments"])
 app.include_router(questionnaires_router, prefix="/api/questionnaires", tags=["questionnaires"])
 app.include_router(admin_migrations_router, prefix="/api", tags=["admin"])
-

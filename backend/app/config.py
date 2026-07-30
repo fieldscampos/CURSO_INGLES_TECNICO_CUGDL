@@ -1,4 +1,5 @@
 from functools import lru_cache
+import json
 from typing import List
 
 from pydantic import field_validator
@@ -42,10 +43,22 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
-        """Parse CORS origins from string."""
+        """Parse CORS origins from CSV or JSON-array string."""
         if isinstance(self.backend_cors_origins, list):
             return self.backend_cors_origins
-        return [item.strip() for item in self.backend_cors_origins.split(",") if item.strip()]
+        raw = (self.backend_cors_origins or "").strip()
+        if not raw:
+            return []
+
+        if raw.startswith("["):
+            try:
+                parsed = json.loads(raw)
+                if isinstance(parsed, list):
+                    return [str(item).strip() for item in parsed if str(item).strip()]
+            except json.JSONDecodeError:
+                pass
+
+        return [item.strip().strip('"').strip("'") for item in raw.split(",") if item.strip()]
 
     @property
     def email_domains_list(self) -> List[str]:
