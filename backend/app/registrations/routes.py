@@ -4,7 +4,11 @@ from app.registrations.schemas import PreRegistrationOut, PreRegistrationIn
 from app.registrations.academic_schemas import AcademicRegistrationIn, AcademicRegistrationOut
 from app.storage.repository import get_repository
 from app.config import get_settings
-from app.supabase_clients import get_main_supabase_client, get_prereg_supabase_client
+from app.supabase_clients import (
+    get_main_supabase_client,
+    insert_prereg_rest_record,
+    get_prereg_rest_record_by_email,
+)
 import logging
 
 logger = logging.getLogger(__name__)
@@ -44,8 +48,6 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
         )
     
     try:
-        supabase, prereg_table = get_prereg_supabase_client()
-        
         # Preparar datos para Supabase
         registration_data = {
             "full_name": data.full_name,
@@ -69,17 +71,7 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
             "scholarship_reason": data.scholarship_reason if data.payment_option == "scholarship" else None
         }
         
-        # Insertar en Supabase
-        response = supabase.table(prereg_table).insert(registration_data).execute()
-        
-        if not response.data:
-            logger.error(f"Error inserting into Supabase: {response}")
-            raise HTTPException(
-                status_code=500,
-                detail="Error al guardar el registro"
-            )
-        
-        inserted_data = response.data[0]
+        inserted_data = insert_prereg_rest_record(registration_data)
         logger.info(f"Pre-registration created: {inserted_data.get('id')}")
         
         return PreRegistrationOut(
@@ -178,17 +170,15 @@ def get_pre_registro_by_email(email: str):
         )
     
     try:
-        supabase, prereg_table = get_prereg_supabase_client()
-        
-        response = supabase.table(prereg_table).select("*").eq("institutional_email", email).limit(1).execute()
-        
-        if not response.data:
+        record = get_prereg_rest_record_by_email(email)
+
+        if not record:
             raise HTTPException(
                 status_code=404,
                 detail="No se encontró registro con ese correo"
             )
         
-        return response.data[0]
+        return record
     
     except HTTPException:
         raise
