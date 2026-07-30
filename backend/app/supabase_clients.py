@@ -1,83 +1,94 @@
+from __future__ import annotations
+
+from typing import Any, Dict
+
 import requests
-from supabase import Client, create_client
-from supabase.lib.client_options import ClientOptions
 
 from app.config import get_settings
 
 
 class PreregistrationConflictError(Exception):
-    """Raised when a pre-registration violates a uniqueness constraint."""
+    pass
 
 
-def _build_client(url: str, key: str) -> Client:
-    options = ClientOptions(persist_session=False)
-    return create_client(url, key, options=options)
-
-
-def get_main_supabase_client() -> Client:
+def get_prereg_rest_config() -> tuple[str, str, str]:
     settings = get_settings()
-    if not settings.supabase_url or not settings.supabase_key:
-        raise RuntimeError("SUPABASE_URL y SUPABASE_KEY no estan configurados")
-    return _build_client(settings.supabase_url, settings.supabase_key)
+    url = settings.prereg_supabase_url
+    key = settings.prereg_supabase_key
+    table = settings.supabase_prereg_table
+
+    if not url or not key:
+        raise ValueError("Supabase de pre-registro no esta configurado")
+
+    return url.rstrip("/"), key, table
 
 
-def get_prereg_supabase_client() -> tuple[Client, str]:
-    settings = get_settings()
-    if not settings.prereg_supabase_url or not settings.prereg_supabase_key:
-        raise RuntimeError(
-            "SUPABASE_PREREG_URL/SUPABASE_PREREG_KEY o SUPABASE_URL/SUPABASE_KEY no estan configurados"
-        )
-    return _build_client(settings.prereg_supabase_url, settings.prereg_supabase_key), settings.supabase_prereg_table
-
-
-def get_prereg_rest_config() -> tuple[str, dict[str, str]]:
-    settings = get_settings()
-    if not settings.prereg_supabase_url or not settings.prereg_supabase_key:
-        raise RuntimeError(
-            "SUPABASE_PREREG_URL/SUPABASE_PREREG_KEY o SUPABASE_URL/SUPABASE_KEY no estan configurados"
-        )
-
-    endpoint = f"{settings.prereg_supabase_url}/rest/v1/{settings.supabase_prereg_table}"
-    headers = {
-        "apikey": settings.prereg_supabase_key,
-        "Authorization": f"Bearer {settings.prereg_supabase_key}",
+def _rest_headers(api_key: str) -> Dict[str, str]:
+    return {
+        "apikey": api_key,
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
-    return endpoint, headers
 
 
-def insert_prereg_rest_record(payload: dict) -> dict:
-    endpoint, headers = get_prereg_rest_config()
+def insert_prereg_rest_record(payload: Dict[str, Any]) -> Dict[str, Any]:
+    base_url, api_key, table = get_prereg_rest_config()
     response = requests.post(
-        endpoint,
-        headers={**headers, "Prefer": "return=representation"},
+        f"{base_url}/rest/v1/{table}",
+        headers={
+            **_rest_headers(api_key),
+            "Prefer": "return=representation",
+        },
         json=payload,
-        timeout=30,
+        timeout=20,
     )
+
     if response.status_code == 409:
-        try:
-            detail = response.json()
-        except ValueError:
-            detail = {}
-        raise PreregistrationConflictError(
-            detail.get("message")
-            or "Ya existe un pre-registro con ese correo institucional."
-        )
-    response.raise_for_status()
+        raise PreregistrationConflictError("Conflicto por registro duplicado")
+
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as exc:
+        detail = _extract_response_detail(response)
+        raise requests.HTTPError(detail or str(exc), response=response) from exc
+
     data = response.json()
-    if not data:
-        raise RuntimeError("Supabase no devolvio filas insertadas")
-    return data[0]
+    if isinstance(data, list) and data:
+        return data[0]
+    if isinstance(data, dict):
+        return data
+    raise ValueError("Supabase no devolvio un registro insertado")
 
 
-def get_prereg_rest_record_by_email(email: str) -> dict | None:
-    endpoint, headers = get_prereg_rest_config()
+def get_prereg_rest_record_by_email(email: str) -> Dict[str, Any] | None:
+    base_url, api_key, table = get_prereg_rest_config()
     response = requests.get(
-        endpoint,
-        headers=headers,
-        params={"select": "*", "institutional_email": f"eq.{email}", "limit": "1"},
-        timeout=30,
+        f"{base_url}/rest/v1/{table}",
+        headers=_rest_headers(api_key),
+        params={
+            "institutional_email": f"eq.{email.strip().lower()}",
+            "select": "*",
+            "limit": 1,
+        },
+        timeout=20,
     )
     response.raise_for_status()
+
     data = response.json()
-    return data[0] if data else None
+    if isinstance(data, list) and data:
+        return data[0]
+    return None
+
+
+def _extract_response_detail(response: requests.Response) -> str | None:
+    try:
+        data = response.json()
+    except ValueError:
+        return response.text.strip() or None
+
+    if isinstance(data, dict):
+        for key in ("message", "detail", "hint", "code"):
+            value = data.get(key)
+            if value:
+                return str(value)
+    return response.text.strip() or None

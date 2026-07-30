@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
+from supabase import create_client
+from supabase.lib.client_options import ClientOptions
 from app.auth.deps import get_current_user_id
 from app.registrations.schemas import PreRegistrationOut, PreRegistrationIn
 from app.registrations.academic_schemas import AcademicRegistrationIn, AcademicRegistrationOut
 from app.storage.repository import get_repository
 from app.config import get_settings
 from app.supabase_clients import (
-    get_main_supabase_client,
-    insert_prereg_rest_record,
-    get_prereg_rest_record_by_email,
     PreregistrationConflictError,
+    get_prereg_rest_record_by_email,
+    insert_prereg_rest_record,
 )
 import logging
 
@@ -42,36 +43,35 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
     settings = get_settings()
     
     if not settings.prereg_supabase_url or not settings.prereg_supabase_key:
-        logger.error("Supabase de pre-registro no esta configurado")
+        logger.error("Supabase no está configurado")
         raise HTTPException(
             status_code=500,
             detail="El servidor no está configurado para guardar registros en este momento"
         )
     
     try:
-        # Preparar datos para Supabase
         registration_data = {
-            "full_name": data.full_name,
-            "student_code": data.student_code,
-            "institutional_email": data.institutional_email,
-            "personal_email": data.personal_email,
-            "phone_whatsapp": data.phone_whatsapp,
-            "career": data.career,
-            "semester": data.semester,
-            "technical_background": data.technical_background,
-            "english_level": data.english_level,
-            "english_exposure": data.english_exposure,
-            "speaking_confidence": data.speaking_confidence,
-            "learning_goal": data.learning_goal,
+            "full_name": data.full_name.strip(),
+            "student_code": data.student_code.strip(),
+            "institutional_email": str(data.institutional_email).strip().lower(),
+            "personal_email": str(data.personal_email).strip().lower() if data.personal_email else None,
+            "phone_whatsapp": data.phone_whatsapp.strip() if data.phone_whatsapp else None,
+            "career": data.career.strip(),
+            "semester": data.semester.strip(),
+            "technical_background": data.technical_background.strip(),
+            "english_level": data.english_level.strip(),
+            "english_exposure": data.english_exposure.strip(),
+            "speaking_confidence": data.speaking_confidence.strip(),
+            "learning_goal": data.learning_goal.strip(),
             "has_laptop": data.has_laptop,
             "preferred_days": data.preferred_days,
             "preferred_schedule": data.preferred_schedule,
-            "motivation": data.motivation,
+            "motivation": data.motivation.strip(),
             "attendance_commitment": data.attendance_commitment,
             "payment_option": data.payment_option,
-            "scholarship_reason": data.scholarship_reason if data.payment_option == "scholarship" else None
+            "scholarship_reason": data.scholarship_reason.strip() if data.payment_option == "scholarship" and data.scholarship_reason else None,
         }
-        
+
         inserted_data = insert_prereg_rest_record(registration_data)
         logger.info(f"Pre-registration created: {inserted_data.get('id')}")
         
@@ -84,14 +84,13 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
             student_code=inserted_data.get("student_code"),
             institutional_email=inserted_data.get("institutional_email")
         )
-        
-    except HTTPException:
-        raise
     except PreregistrationConflictError:
         raise HTTPException(
             status_code=409,
             detail="Ya existe un pre-registro con ese correo institucional. Si quieres, podemos revisar o actualizar ese registro."
         )
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error en pre-registro: {str(e)}")
         raise HTTPException(
@@ -117,7 +116,8 @@ def create_academic_registro(data: AcademicRegistrationIn) -> AcademicRegistrati
         )
     
     try:
-        supabase = get_main_supabase_client()
+        options = ClientOptions(persist_session=False)
+        supabase = create_client(settings.supabase_url, settings.supabase_key, options=options)
         
         # Preparar datos para Supabase
         registration_data = {
@@ -172,19 +172,19 @@ def get_pre_registro_by_email(email: str):
     if not settings.prereg_supabase_url or not settings.prereg_supabase_key:
         raise HTTPException(
             status_code=500,
-            detail="Supabase de pre-registro no esta configurado"
+            detail="Supabase no está configurado"
         )
     
     try:
-        record = get_prereg_rest_record_by_email(email)
+        response = get_prereg_rest_record_by_email(email)
 
-        if not record:
+        if not response:
             raise HTTPException(
                 status_code=404,
                 detail="No se encontró registro con ese correo"
             )
         
-        return record
+        return response
     
     except HTTPException:
         raise
@@ -227,7 +227,7 @@ def scholarship_enrollment(data: dict):
                 detail="Debes confirmar el compromiso de asistencia"
             )
         
-        supabase = get_main_supabase_client()
+        supabase = create_client(settings.supabase_url, settings.supabase_key)
         
         # Crear registro de beca confirmada en tabla scholarship_enrollments
         enrollment_data = {

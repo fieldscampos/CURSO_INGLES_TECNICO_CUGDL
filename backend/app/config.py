@@ -1,5 +1,5 @@
-from functools import lru_cache
 import json
+from functools import lru_cache
 from typing import List
 
 from pydantic import field_validator
@@ -15,7 +15,7 @@ class Settings(BaseSettings):
         }
     )
 
-    app_name: str = "Curso Intensivo de Ingles Tecnico CUGDL x Growmo"
+    app_name: str = "Curso intensivo de Ingles tecnico CUGDL x growmo.tech"
     app_env: str = "dev"
     backend_cors_origins: str = "http://localhost:5173"
 
@@ -34,31 +34,21 @@ class Settings(BaseSettings):
     supabase_prereg_table: str = "english_tech_preregistrations"
 
     @property
-    def prereg_supabase_url(self) -> str | None:
-        return self.supabase_prereg_url or self.supabase_url
-
-    @property
-    def prereg_supabase_key(self) -> str | None:
-        return self.supabase_prereg_key or self.supabase_key
-
-    @property
     def cors_origins_list(self) -> List[str]:
-        """Parse CORS origins from CSV or JSON-array string."""
+        """Parse CORS origins from string."""
         if isinstance(self.backend_cors_origins, list):
             return self.backend_cors_origins
-        raw = (self.backend_cors_origins or "").strip()
-        if not raw:
+        raw_value = (self.backend_cors_origins or "").strip()
+        if not raw_value:
             return []
-
-        if raw.startswith("["):
+        if raw_value.startswith("["):
             try:
-                parsed = json.loads(raw)
-                if isinstance(parsed, list):
-                    return [str(item).strip() for item in parsed if str(item).strip()]
+                parsed = json.loads(raw_value)
             except json.JSONDecodeError:
-                pass
-
-        return [item.strip().strip('"').strip("'") for item in raw.split(",") if item.strip()]
+                parsed = []
+            if isinstance(parsed, list):
+                return [str(item).strip() for item in parsed if str(item).strip()]
+        return [item.strip() for item in raw_value.split(",") if item.strip()]
 
     @property
     def email_domains_list(self) -> List[str]:
@@ -66,6 +56,14 @@ class Settings(BaseSettings):
         if isinstance(self.allowed_email_domains, list):
             return self.allowed_email_domains
         return [item.strip().lower().lstrip("@") for item in self.allowed_email_domains.split(",") if item.strip()]
+
+    @property
+    def prereg_supabase_url(self) -> str | None:
+        return self.supabase_prereg_url or self.supabase_url
+
+    @property
+    def prereg_supabase_key(self) -> str | None:
+        return self.supabase_prereg_key or self.supabase_key
 
 
 @lru_cache

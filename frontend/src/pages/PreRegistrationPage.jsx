@@ -9,38 +9,38 @@ const CAREERS = [
   'Inteligencia Artificial',
   'Creatividad Digital',
   'Inteligencia Financiera',
-  'Tecnologías Biomédicas',
-  'Otro centro universitario/Externo CUGDL'
+  'Tecnologias Biomedicas',
+  'Otro centro universitario / Externo CUGDL',
 ];
 
-const SEMESTERS = ['1ro', '2do', '3ro', '4to'];
+const SEMESTERS = ['1ro', '2do', '3ro', '4to', '5to o mas', 'Egresado/a'];
 
 const TECHNICAL_BACKGROUNDS = [
-  'Quiero empezar a entender ingles tecnico aunque aun voy iniciando en tecnologia',
-  'Estoy estudiando o practicando temas tech y quiero empezar a conversar sobre ellos',
-  'Ya hago proyectos o practicas y quiero explicar mejor mi trabajo en ingles',
-  'Ya colaboro en entornos tech y quiero ganar fluidez al hablar de temas tecnicos'
+  'Aun no tengo un perfil tecnico claro',
+  'Estoy empezando a explorar tecnologia',
+  'Ya estudio o practico en un area tech',
+  'Ya trabajo o colaboro en temas de tecnologia',
 ];
 
 const ENGLISH_LEVELS = [
-  'Casi nulo',
+  'Principiante total',
   'Basico',
-  'Basico alto',
-  'Intermedio'
+  'Basico con algo de comprension',
+  'Intermedio',
 ];
 
-const ENGLISH_EXPOSURES = [
-  'Nunca he usado ingles tecnico',
-  'Solo lo he visto en videos, tutoriales o documentacion',
-  'He tomado clases o cursos, pero casi no lo hablo',
-  'Ya lo he usado en entrevistas, clases, proyectos o trabajo'
+const ENGLISH_EXPOSURE_OPTIONS = [
+  'Casi nada',
+  'He visto terminos sueltos o documentacion ocasional',
+  'Leo o escucho ingles tecnico de vez en cuando',
+  'Lo uso con cierta frecuencia, pero quiero hablarlo mejor',
 ];
 
-const SPEAKING_CONFIDENCE_LEVELS = [
-  'Me cuesta mucho hablar aunque entienda algunas palabras',
-  'Puedo decir frases sueltas y presentarme un poco',
-  'Puedo mantener una conversacion corta con pausas',
-  'Ya puedo explicar ideas tecnicas con cierta seguridad'
+const SPEAKING_CONFIDENCE_OPTIONS = [
+  'Me cuesta mucho hablarlo',
+  'Puedo intentar frases cortas',
+  'Puedo sostener ideas simples con apoyo',
+  'Ya me siento relativamente comodo/a, pero quiero mejorar',
 ];
 
 export default function PreRegistrationPage() {
@@ -58,125 +58,87 @@ export default function PreRegistrationPage() {
     speakingConfidence: '',
     learningGoal: '',
     hasLaptop: false,
-    preferredDays: '', // 'weekdays', 'weekend', o 'both'
-    preferredSchedule: '', // 'afternoon', 'evening', o 'both'
+    preferredDays: '',
+    preferredSchedule: '',
     motivation: '',
     attendanceCommitment: false,
-    paymentOption: '', // 'payment' o 'scholarship'
-    scholarshipReason: ''
+    paymentOption: '',
+    scholarshipReason: '',
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
-
-
   const validateForm = () => {
-    // Validaciones requeridas
     if (!formData.fullName.trim()) {
-      setError('El nombre completo es requerido');
+      setError('El nombre completo es requerido.');
       return false;
     }
 
-    if (!formData.studentCode.trim()) {
-      setError('El código de estudiante es requerido');
+    if (!formData.studentCode.trim() || !/^\d+$/.test(formData.studentCode)) {
+      setError('El codigo de estudiante es requerido y debe contener solo numeros.');
       return false;
     }
 
-    if (!/^\d+$/.test(formData.studentCode)) {
-      setError('El código de estudiante debe contener solo números');
+    if (!formData.institutionalEmail.trim().toLowerCase().endsWith('@alumnos.udg.mx')) {
+      setError('El correo institucional debe terminar en @alumnos.udg.mx.');
       return false;
     }
 
-    if (!formData.institutionalEmail.trim()) {
-      setError('El email institucional es requerido');
+    if (!formData.career || !formData.semester) {
+      setError('Completa tu carrera y tu ciclo o semestre actual.');
       return false;
     }
 
-    if (!formData.institutionalEmail.endsWith('@alumnos.udg.mx')) {
-      setError('El email institucional debe terminar en @alumnos.udg.mx');
-      return false;
-    }
-
-    if (!formData.career) {
-      setError('La carrera es requerida');
-      return false;
-    }
-
-    if (!formData.semester) {
-      setError('El semestre es requerido');
-      return false;
-    }
-
-    if (!formData.technicalBackground) {
-      setError('El contexto tecnico es requerido');
-      return false;
-    }
-
-    if (!formData.englishLevel) {
-      setError('El nivel actual de ingles es requerido');
-      return false;
-    }
-
-    if (!formData.englishExposure) {
-      setError('La experiencia previa con ingles tecnico es requerida');
-      return false;
-    }
-
-    if (!formData.speakingConfidence) {
-      setError('Tu nivel de confianza para hablar es requerido');
+    if (!formData.technicalBackground || !formData.englishLevel || !formData.englishExposure || !formData.speakingConfidence) {
+      setError('Completa la seccion de perfil tecnico y punto de partida.');
       return false;
     }
 
     if (!formData.learningGoal.trim()) {
-      setError('Tu objetivo principal en el curso es requerido');
+      setError('Cuéntanos que te gustaria poder hacer en ingles tecnico.');
       return false;
     }
 
-    if (!formData.preferredDays) {
-      setError('Tu preferencia de días es requerida');
-      return false;
-    }
-
-    if (!formData.preferredSchedule) {
-      setError('Tu preferencia de horario es requerida');
+    if (!formData.preferredDays || !formData.preferredSchedule) {
+      setError('Selecciona tu preferencia de dias y horario.');
       return false;
     }
 
     if (!formData.motivation.trim()) {
-      setError('La motivación es requerida');
+      setError('La motivacion es requerida.');
       return false;
     }
 
     if (!formData.attendanceCommitment) {
-      setError('Debes aceptar el compromiso de asistencia');
+      setError('Debes aceptar el compromiso de asistencia.');
       return false;
     }
 
     if (!formData.paymentOption) {
-      setError('Debes seleccionar una opción de pago o beca');
+      setError('Selecciona una opcion de cuota o beca.');
       return false;
     }
 
     if (formData.paymentOption === 'scholarship' && !formData.scholarshipReason.trim()) {
-      setError('Debes explicar por qué solicitas la beca');
+      setError('Explica por que solicitas la beca.');
       return false;
     }
 
     return true;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError('');
 
     if (!validateForm()) {
@@ -187,30 +149,39 @@ export default function PreRegistrationPage() {
 
     try {
       await api.post('/registrations/pre-registro', {
-        full_name: formData.fullName,
-        student_code: formData.studentCode,
-        institutional_email: formData.institutionalEmail,
-        personal_email: formData.personalEmail || null,
-        phone_whatsapp: formData.phoneWhatsapp || null,
+        full_name: formData.fullName.trim(),
+        student_code: formData.studentCode.trim(),
+        institutional_email: formData.institutionalEmail.trim().toLowerCase(),
+        personal_email: formData.personalEmail.trim() || null,
+        phone_whatsapp: formData.phoneWhatsapp.trim() || null,
         career: formData.career,
         semester: formData.semester,
         technical_background: formData.technicalBackground,
         english_level: formData.englishLevel,
         english_exposure: formData.englishExposure,
         speaking_confidence: formData.speakingConfidence,
-        learning_goal: formData.learningGoal,
+        learning_goal: formData.learningGoal.trim(),
         has_laptop: formData.hasLaptop,
         preferred_days: formData.preferredDays,
         preferred_schedule: formData.preferredSchedule,
-        motivation: formData.motivation,
+        motivation: formData.motivation.trim(),
         attendance_commitment: formData.attendanceCommitment,
         payment_option: formData.paymentOption,
-        scholarship_reason: formData.paymentOption === 'scholarship' ? formData.scholarshipReason : null
+        scholarship_reason:
+          formData.paymentOption === 'scholarship' ? formData.scholarshipReason.trim() : null,
       });
 
       setSubmitted(true);
     } catch (err) {
-      setError(err.response?.data?.detail || err.message || 'Error al enviar el formulario. Intenta de nuevo.');
+      if (err.response?.status === 409) {
+        setError(
+          'Ya existe un pre-registro con este correo institucional. Si quieres, usa otro correo o avísame para revisar ese registro.'
+        );
+      } else {
+        setError(
+          err.response?.data?.detail || 'Error al enviar el formulario. Intenta de nuevo.'
+        );
+      }
       console.error('Form submission error:', err);
     } finally {
       setLoading(false);
@@ -223,10 +194,10 @@ export default function PreRegistrationPage() {
         <div className="container narrow">
           <div className="success-message">
             <h1>¡Pre-registro completado!</h1>
-            <p>Gracias por tu interes en el Curso Intensivo de Ingles Tecnico de CUGDL x growmo.tech.</p>
-            <p>Nos pondremos en contacto pronto con mas detalles sobre el inicio del programa.</p>
+            <p>Gracias por registrarte en el curso intensivo de ingles tecnico.</p>
+            <p>El equipo de CUGDL y growmo.tech te compartira los siguientes pasos por correo.</p>
             <Link to="/" className="btn btn-primary">
-              Volver al Inicio
+              Volver al inicio
             </Link>
           </div>
         </div>
@@ -239,24 +210,27 @@ export default function PreRegistrationPage() {
       <div className="container narrow">
         <div className="preregistration-header">
           <div className="logos-row">
-            <img src={GrowmoLogo} alt="Growmo Tech" className="logo" />
+            <img src={GrowmoLogo} alt="growmo.tech" className="logo" />
             <span className="separator">×</span>
             <img src={CUGDLLogo} alt="CUGDL" className="logo" />
           </div>
-          <h1>Pre-Registro: Curso Intensivo de Ingles Tecnico</h1>
+          <h1>Pre-registro: Curso intensivo de Ingles tecnico</h1>
           <p className="intro-text">
-            Te damos la bienvenida al pre-registro del curso intensivo de 5 semanas creado por CUGDL en colaboracion con growmo.tech para ayudar a alumnos a empezar a conversar ingles tecnico con mas confianza.
+            Este formulario nos ayudara a conocer tu punto de partida y a construir junto con
+            growmo.tech una experiencia util, realista y enfocada en conversacion tech.
           </p>
         </div>
 
         {error && <div className="error-banner">{error}</div>}
 
         <form onSubmit={handleSubmit} className="preregistration-form">
-          {/* Sección 1: Información Personal e Institucional */}
           <section className="form-section">
-            <h2>Información Personal e Institucional</h2>
-            <p className="section-description">Esta sección es indispensable para validar que sean alumnos del centro y poder contactarlos.</p>
-            
+            <h2>Informacion personal e institucional</h2>
+            <p className="section-description">
+              Seguimos recopilando los datos basicos para identificarte, contactarte y validar tu
+              participacion como estudiante.
+            </p>
+
             <div className="form-group">
               <label htmlFor="fullName">Nombre completo *</label>
               <input
@@ -265,13 +239,13 @@ export default function PreRegistrationPage() {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                placeholder="Juan Pérez García"
+                placeholder="Juan Perez Garcia"
                 required
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="studentCode">Código de estudiante *</label>
+              <label htmlFor="studentCode">Codigo de estudiante *</label>
               <input
                 type="text"
                 id="studentCode"
@@ -282,11 +256,12 @@ export default function PreRegistrationPage() {
                 pattern="[0-9]*"
                 required
               />
-              <small>Solo números</small>
             </div>
 
             <div className="form-group">
-              <label htmlFor="institutionalEmail">Correo electrónico institucional (@alumnos.udg.mx) *</label>
+              <label htmlFor="institutionalEmail">
+                Correo institucional (@alumnos.udg.mx) *
+              </label>
               <input
                 type="email"
                 id="institutionalEmail"
@@ -296,11 +271,10 @@ export default function PreRegistrationPage() {
                 placeholder="nombre@alumnos.udg.mx"
                 required
               />
-              <small>Es crucial para la comunicación oficial</small>
             </div>
 
             <div className="form-group">
-              <label htmlFor="personalEmail">Correo electrónico personal</label>
+              <label htmlFor="personalEmail">Correo personal</label>
               <input
                 type="email"
                 id="personalEmail"
@@ -309,11 +283,10 @@ export default function PreRegistrationPage() {
                 onChange={handleChange}
                 placeholder="nombre@gmail.com"
               />
-              <small>Opcional, por si falla el institucional</small>
             </div>
 
             <div className="form-group">
-              <label htmlFor="phoneWhatsapp">Número de teléfono / WhatsApp</label>
+              <label htmlFor="phoneWhatsapp">Telefono / WhatsApp</label>
               <input
                 type="tel"
                 id="phoneWhatsapp"
@@ -322,17 +295,18 @@ export default function PreRegistrationPage() {
                 onChange={handleChange}
                 placeholder="+52 33 1234 5678"
               />
-              <small>Útil para avisos rápidos</small>
             </div>
           </section>
 
-          {/* Sección 2: Perfil Académico */}
           <section className="form-section">
-            <h2>Perfil Académico</h2>
-            <p className="section-description">Para saber de qué carreras vienen y qué tan avanzados están en la universidad.</p>
+            <h2>Perfil academico</h2>
+            <p className="section-description">
+              Nos ayuda a entender desde que carreras y etapas estan llegando las personas
+              interesadas.
+            </p>
 
             <div className="form-group">
-              <label htmlFor="career">Carrera o Programa Académico *</label>
+              <label htmlFor="career">Carrera o programa academico *</label>
               <select
                 id="career"
                 name="career"
@@ -341,14 +315,16 @@ export default function PreRegistrationPage() {
                 required
               >
                 <option value="">-- Selecciona --</option>
-                {CAREERS.map(career => (
-                  <option key={career} value={career}>{career}</option>
+                {CAREERS.map((career) => (
+                  <option key={career} value={career}>
+                    {career}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="semester">Ciclo / Semestre actual *</label>
+              <label htmlFor="semester">Ciclo / semestre actual *</label>
               <select
                 id="semester"
                 name="semester"
@@ -357,20 +333,26 @@ export default function PreRegistrationPage() {
                 required
               >
                 <option value="">-- Selecciona --</option>
-                {SEMESTERS.map(sem => (
-                  <option key={sem} value={sem}>{sem}</option>
+                {SEMESTERS.map((semester) => (
+                  <option key={semester} value={semester}>
+                    {semester}
+                  </option>
                 ))}
               </select>
             </div>
           </section>
 
-          {/* Sección 3: Perfil Tecnico y Conocimientos Previos */}
           <section className="form-section">
-            <h2>Perfil Tecnico y Punto de Partida</h2>
-            <p className="section-description">Esto ayudara a los companeros de Growmo a construir mejor el ritmo y el enfoque semana a semana.</p>
+            <h2>Perfil tecnico y punto de partida</h2>
+            <p className="section-description">
+              Esta parte sera muy valiosa para que los companeros de growmo.tech puedan ajustar el
+              contenido semana por semana.
+            </p>
 
             <div className="form-group">
-              <label htmlFor="technicalBackground">¿En que contexto te gustaria usar o practicar ingles tecnico? *</label>
+              <label htmlFor="technicalBackground">
+                ¿Que tanto te relacionas hoy con temas tecnicos o de tecnologia? *
+              </label>
               <select
                 id="technicalBackground"
                 name="technicalBackground"
@@ -379,8 +361,10 @@ export default function PreRegistrationPage() {
                 required
               >
                 <option value="">-- Selecciona --</option>
-                {TECHNICAL_BACKGROUNDS.map(level => (
-                  <option key={level} value={level}>{level}</option>
+                {TECHNICAL_BACKGROUNDS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
                 ))}
               </select>
             </div>
@@ -395,8 +379,10 @@ export default function PreRegistrationPage() {
                 required
               >
                 <option value="">-- Selecciona --</option>
-                {ENGLISH_LEVELS.map((level) => (
-                  <option key={level} value={level}>{level}</option>
+                {ENGLISH_LEVELS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
                 ))}
               </select>
             </div>
@@ -411,14 +397,18 @@ export default function PreRegistrationPage() {
                 required
               >
                 <option value="">-- Selecciona --</option>
-                {ENGLISH_EXPOSURES.map((item) => (
-                  <option key={item} value={item}>{item}</option>
+                {ENGLISH_EXPOSURE_OPTIONS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="speakingConfidence">¿Que tan comodo o comoda te sientes hablando ingles hoy? *</label>
+              <label htmlFor="speakingConfidence">
+                ¿Que tan comodo o comoda te sientes hablando ingles hoy? *
+              </label>
               <select
                 id="speakingConfidence"
                 name="speakingConfidence"
@@ -427,81 +417,85 @@ export default function PreRegistrationPage() {
                 required
               >
                 <option value="">-- Selecciona --</option>
-                {SPEAKING_CONFIDENCE_LEVELS.map((item) => (
-                  <option key={item} value={item}>{item}</option>
+                {SPEAKING_CONFIDENCE_OPTIONS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="learningGoal">¿Que te gustaria poder hacer en ingles tecnico al terminar estas 5 semanas? *</label>
+              <label htmlFor="learningGoal">
+                ¿Que te gustaria poder hacer en ingles tecnico al terminar estas 5 semanas? *
+              </label>
               <textarea
                 id="learningGoal"
                 name="learningGoal"
                 value={formData.learningGoal}
                 onChange={handleChange}
                 rows={4}
-                placeholder="Por ejemplo: presentarme mejor, participar en standups, entender documentacion o hablar de mis proyectos."
+                placeholder="Por ejemplo: presentarme mejor, participar en reuniones, entender documentacion o hablar con mas seguridad."
                 required
               />
             </div>
           </section>
 
-          {/* Sección 4: Logística y Compromiso */}
           <section className="form-section">
-            <h2>Logistica y Compromiso</h2>
-            <p className="section-description">Esto nos ayuda a acomodar mejor la cohorte y a priorizar a quienes realmente podran aprovechar el intensivo.</p>
+            <h2>Logistica y compromiso</h2>
+            <p className="section-description">
+              Queremos entender tu disponibilidad real y el nivel de compromiso con el curso.
+            </p>
 
             <div className="form-group">
-              <label>¿Cuentas con una computadora portatil propia que puedas usar en las sesiones?</label>
+              <label>¿Cuentas con laptop propia para tus practicas y sesiones?</label>
               <div className="radio-group">
                 <label>
                   <input
                     type="radio"
                     checked={formData.hasLaptop === true}
-                    onChange={() => setFormData(prev => ({ ...prev, hasLaptop: true }))}
+                    onChange={() => setFormData((prev) => ({ ...prev, hasLaptop: true }))}
                   />
-                  Sí
+                  Si
                 </label>
                 <label>
                   <input
                     type="radio"
                     checked={formData.hasLaptop === false}
-                    onChange={() => setFormData(prev => ({ ...prev, hasLaptop: false }))}
+                    onChange={() => setFormData((prev) => ({ ...prev, hasLaptop: false }))}
                   />
                   No
                 </label>
               </div>
-              <small>Es clave para practicar con recursos, ejercicios y materiales durante el curso.</small>
             </div>
 
             <div className="form-group">
-              <label>¿Que dias tienes preferencia o disponibilidad para asistir al curso? *</label>
+              <label>¿Que dias te acomodan mas para asistir? *</label>
               <div className="checkbox-group">
                 <label>
                   <input
                     type="radio"
                     name="preferredDays"
                     checked={formData.preferredDays === 'weekdays'}
-                    onChange={() => setFormData(prev => ({ ...prev, preferredDays: 'weekdays' }))}
+                    onChange={() => setFormData((prev) => ({ ...prev, preferredDays: 'weekdays' }))}
                   />
-                  Entre semana (Lunes a Viernes)
+                  Entre semana
                 </label>
                 <label>
                   <input
                     type="radio"
                     name="preferredDays"
                     checked={formData.preferredDays === 'weekend'}
-                    onChange={() => setFormData(prev => ({ ...prev, preferredDays: 'weekend' }))}
+                    onChange={() => setFormData((prev) => ({ ...prev, preferredDays: 'weekend' }))}
                   />
-                  Fin de semana (Sábado)
+                  Fin de semana
                 </label>
                 <label>
                   <input
                     type="radio"
                     name="preferredDays"
                     checked={formData.preferredDays === 'both'}
-                    onChange={() => setFormData(prev => ({ ...prev, preferredDays: 'both' }))}
+                    onChange={() => setFormData((prev) => ({ ...prev, preferredDays: 'both' }))}
                   />
                   Ambos
                 </label>
@@ -509,14 +503,16 @@ export default function PreRegistrationPage() {
             </div>
 
             <div className="form-group">
-              <label>¿En que horario prefieres que se impartan las sesiones? *</label>
+              <label>¿En que horario prefieres las sesiones? *</label>
               <div className="checkbox-group">
                 <label>
                   <input
                     type="radio"
                     name="preferredSchedule"
                     checked={formData.preferredSchedule === 'afternoon'}
-                    onChange={() => setFormData(prev => ({ ...prev, preferredSchedule: 'afternoon' }))}
+                    onChange={() =>
+                      setFormData((prev) => ({ ...prev, preferredSchedule: 'afternoon' }))
+                    }
                   />
                   Tarde
                 </label>
@@ -525,7 +521,9 @@ export default function PreRegistrationPage() {
                     type="radio"
                     name="preferredSchedule"
                     checked={formData.preferredSchedule === 'evening'}
-                    onChange={() => setFormData(prev => ({ ...prev, preferredSchedule: 'evening' }))}
+                    onChange={() =>
+                      setFormData((prev) => ({ ...prev, preferredSchedule: 'evening' }))
+                    }
                   />
                   Noche
                 </label>
@@ -534,7 +532,7 @@ export default function PreRegistrationPage() {
                     type="radio"
                     name="preferredSchedule"
                     checked={formData.preferredSchedule === 'both'}
-                    onChange={() => setFormData(prev => ({ ...prev, preferredSchedule: 'both' }))}
+                    onChange={() => setFormData((prev) => ({ ...prev, preferredSchedule: 'both' }))}
                   />
                   Ambos
                 </label>
@@ -542,14 +540,16 @@ export default function PreRegistrationPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="motivation">¿Por que te interesa inscribirte a este curso de ingles tecnico y conversacion tech? *</label>
+              <label htmlFor="motivation">
+                ¿Por que te interesa inscribirte a este curso de ingles tecnico? *
+              </label>
               <textarea
                 id="motivation"
                 name="motivation"
                 value={formData.motivation}
                 onChange={handleChange}
                 rows={4}
-                placeholder="Cuentanos por que este curso seria valioso para tu crecimiento academico o profesional."
+                placeholder="Cuentanos que te motiva y en que contexto te gustaria usar este ingles."
                 required
               />
             </div>
@@ -563,83 +563,85 @@ export default function PreRegistrationPage() {
                   onChange={handleChange}
                   required
                 />
-                Me comprometo a asistir a las sesiones programadas y cumplir con el codigo de conducta de la comunidad *
+                Me comprometo a asistir, practicar y respetar el codigo de conducta de la comunidad *
               </label>
             </div>
           </section>
 
-          {/* Sección 5: Cuota de Recuperación y Becas */}
           <section className="form-section">
-            <h2>Cuota de Recuperación y Becas</h2>
-            
+            <h2>Cuota de recuperacion y becas</h2>
+
             <div className="section-intro">
               <p className="intro-paragraph">
-                Este taller es posible gracias a la colaboracion voluntaria de profesionales de <strong>Growmo Tech</strong>. La cuota de recuperacion de <strong>$200 MXN</strong> nos ayuda a cubrir la operacion y el acompanamiento del programa.
+                Este taller es posible gracias a la colaboracion voluntaria de profesionales de
+                Growmo Tech. La cuota de recuperacion es de <strong>$250 MXN</strong>.
               </p>
               <p className="intro-paragraph">
-                En apoyo a la comunidad estudiantil, se contemplara un numero limitado de becas del 100% para alumnos con necesidad economica demostrable y alto compromiso con el curso.
+                Tambien habra un numero limitado de becas para personas que realmente necesiten el
+                apoyo y demuestren compromiso para aprovechar el curso.
               </p>
             </div>
 
             <div className="form-group">
-              <label>Situacion para la inscripcion (Selecciona una) *</label>
+              <label>Situacion para la inscripcion *</label>
               <div className="checkbox-group">
                 <label>
                   <input
                     type="radio"
                     name="paymentOption"
                     checked={formData.paymentOption === 'payment'}
-                    onChange={() => setFormData(prev => ({ ...prev, paymentOption: 'payment' }))}
+                    onChange={() => setFormData((prev) => ({ ...prev, paymentOption: 'payment' }))}
                   />
-                  <span className="option-title">Deseo realizar el pago de la cuota de recuperacion</span>
-                  <span className="option-description">($200 MXN) Contribuyo a la operacion del curso y aseguro mi lugar tras el pre-registro.</span>
+                  <span className="option-title">Deseo realizar el pago de la cuota</span>
+                  <span className="option-description">
+                    ($250 MXN) Quiero asegurar mi lugar y continuar con el proceso de inscripcion.
+                  </span>
                 </label>
                 <label>
                   <input
                     type="radio"
                     name="paymentOption"
                     checked={formData.paymentOption === 'scholarship'}
-                    onChange={() => setFormData(prev => ({ ...prev, paymentOption: 'scholarship' }))}
+                    onChange={() =>
+                      setFormData((prev) => ({ ...prev, paymentOption: 'scholarship' }))
+                    }
                   />
-                  <span className="option-title">Solicito ser candidato(a) a una beca del 100%</span>
-                  <span className="option-description">Entiendo que las becas son limitadas y que mi solicitud pasara por un proceso de revision y seleccion basado en mi exposicion de motivos. Esto no asegura mi lugar en el curso.</span>
+                  <span className="option-title">Solicito ser considerado/a para beca</span>
+                  <span className="option-description">
+                    Entiendo que el apoyo es limitado y que mi solicitud sera revisada por el
+                    equipo organizador.
+                  </span>
                 </label>
               </div>
             </div>
 
             {formData.paymentOption === 'scholarship' && (
               <div className="form-group">
-                <label htmlFor="scholarshipReason">Exposicion de motivos para solicitud de beca *</label>
+                <label htmlFor="scholarshipReason">¿Por que solicitas la beca? *</label>
                 <textarea
                   id="scholarshipReason"
                   name="scholarshipReason"
                   value={formData.scholarshipReason}
                   onChange={handleChange}
                   rows={5}
-                  placeholder="Explica brevemente tu situacion actual y por que este apoyo es importante para que puedas cursar el programa. Las becas se asignaran priorizando compromiso y necesidad economica demostrada."
-                  required={formData.paymentOption === 'scholarship'}
+                  placeholder="Explica tu situacion actual y por que este apoyo haria posible tu participacion."
+                  required
                 />
-                <small>La informacion proporcionada en esta seccion sera tratada con confidencialidad y solo se utilizara para el proceso de seleccion de becas.</small>
               </div>
             )}
 
             <div className="form-notices">
               <p className="notice">
-                <strong>Importante:</strong> El pre-registro no garantiza un lugar definitivo en el curso. La confirmacion final se realizara posteriormente, una vez revisadas las solicitudes y asignadas las becas correspondientes.
-              </p>
-              <p className="notice">
-                El equipo organizador contactara a quienes avancen en el proceso via correo institucional para compartir los siguientes pasos, detalles de pago o asignacion de becas.
+                <strong>Importante:</strong> El pre-registro no garantiza un lugar definitivo. La
+                confirmacion llegara despues de revisar disponibilidad, horarios y solicitudes de
+                beca.
               </p>
             </div>
           </section>
 
           <div className="form-actions">
-            <button
-              type="submit"
-              className="btn btn-primary btn-large"
-              disabled={loading}
-            >
-              {loading ? 'Enviando...' : 'Completar Pre-Registro'}
+            <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
+              {loading ? 'Enviando...' : 'Completar pre-registro'}
             </button>
             <Link to="/" className="btn btn-secondary">
               Cancelar

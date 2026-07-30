@@ -17,6 +17,12 @@ settings = get_settings()
 # Ensure we have valid CORS origins
 cors_origins = settings.cors_origins_list if settings.cors_origins_list else ["*"]
 
+
+def _is_allowed_origin(origin: str | None) -> bool:
+    if not origin:
+        return False
+    return "*" in cors_origins or origin in cors_origins
+
 app = FastAPI(
     title=settings.app_name,
     version="0.1.0",
@@ -35,27 +41,27 @@ app.add_middleware(
 # Agregar middleware HTTP personalizado SEGUNDO (será ejecutado PRIMERO)
 @app.middleware("http")
 async def cors_middleware(request: Request, call_next):
-    """Handle CORS preflight requests and normalize CORS headers on responses."""
-    request_origin = request.headers.get("origin")
-    allowed_origin = None
-    if request_origin and ("*" in cors_origins or request_origin in cors_origins):
-        allowed_origin = request_origin
-
+    """Handle CORS preflight requests before validation."""
+    origin = request.headers.get("origin")
     if request.method == "OPTIONS":
+        headers = {
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": request.headers.get(
+                "access-control-request-headers",
+                "Content-Type, Authorization",
+            ),
+            "Access-Control-Max-Age": "3600",
+        }
+        if _is_allowed_origin(origin):
+            headers["Access-Control-Allow-Origin"] = origin
+            headers["Access-Control-Allow-Credentials"] = "true"
         return Response(
             status_code=200,
-            headers={
-                "Access-Control-Allow-Origin": allowed_origin or request.headers.get("origin", "*"),
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization",
-                "Access-Control-Allow-Credentials": "true",
-                "Access-Control-Max-Age": "3600",
-            },
+            headers=headers,
         )
-
     response = await call_next(request)
-    if allowed_origin:
-        response.headers["Access-Control-Allow-Origin"] = allowed_origin
+    if _is_allowed_origin(origin):
+        response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Vary"] = "Origin"
     return response
