@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from supabase import create_client
-from supabase.lib.client_options import ClientOptions
 from app.auth.deps import get_current_user_id
 from app.registrations.schemas import PreRegistrationOut, PreRegistrationIn
 from app.registrations.academic_schemas import AcademicRegistrationIn, AcademicRegistrationOut
 from app.storage.repository import get_repository
 from app.config import get_settings
+from app.supabase_clients import get_main_supabase_client, get_prereg_supabase_client
 import logging
 
 logger = logging.getLogger(__name__)
@@ -37,15 +36,15 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
     """
     settings = get_settings()
     
-    if not settings.supabase_url or not settings.supabase_key:
-        logger.error("Supabase no está configurado")
+    if not settings.prereg_supabase_url or not settings.prereg_supabase_key:
+        logger.error("Supabase de pre-registro no esta configurado")
         raise HTTPException(
             status_code=500,
             detail="El servidor no está configurado para guardar registros en este momento"
         )
     
     try:
-        supabase = create_client(settings.supabase_url, settings.supabase_key)
+        supabase, prereg_table = get_prereg_supabase_client()
         
         # Preparar datos para Supabase
         registration_data = {
@@ -71,7 +70,7 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
         }
         
         # Insertar en Supabase
-        response = supabase.table("pre_registrations").insert(registration_data).execute()
+        response = supabase.table(prereg_table).insert(registration_data).execute()
         
         if not response.data:
             logger.error(f"Error inserting into Supabase: {response}")
@@ -120,8 +119,7 @@ def create_academic_registro(data: AcademicRegistrationIn) -> AcademicRegistrati
         )
     
     try:
-        options = ClientOptions(persist_session=False)
-        supabase = create_client(settings.supabase_url, settings.supabase_key, options=options)
+        supabase = get_main_supabase_client()
         
         # Preparar datos para Supabase
         registration_data = {
@@ -173,16 +171,16 @@ def get_pre_registro_by_email(email: str):
     """
     settings = get_settings()
     
-    if not settings.supabase_url or not settings.supabase_key:
+    if not settings.prereg_supabase_url or not settings.prereg_supabase_key:
         raise HTTPException(
             status_code=500,
-            detail="Supabase no está configurado"
+            detail="Supabase de pre-registro no esta configurado"
         )
     
     try:
-        supabase = create_client(settings.supabase_url, settings.supabase_key)
+        supabase, prereg_table = get_prereg_supabase_client()
         
-        response = supabase.table("pre_registrations").select("*").eq("institutional_email", email).limit(1).execute()
+        response = supabase.table(prereg_table).select("*").eq("institutional_email", email).limit(1).execute()
         
         if not response.data:
             raise HTTPException(
@@ -233,7 +231,7 @@ def scholarship_enrollment(data: dict):
                 detail="Debes confirmar el compromiso de asistencia"
             )
         
-        supabase = create_client(settings.supabase_url, settings.supabase_key)
+        supabase = get_main_supabase_client()
         
         # Crear registro de beca confirmada en tabla scholarship_enrollments
         enrollment_data = {

@@ -14,7 +14,7 @@ class Settings(BaseSettings):
         }
     )
 
-    app_name: str = "Curso de Python GDG Guadalajara x CUGDL"
+    app_name: str = "Curso Intensivo de Ingles Tecnico CUGDL x Growmo"
     app_env: str = "dev"
     backend_cors_origins: str = "http://localhost:5173"
 
@@ -28,6 +28,17 @@ class Settings(BaseSettings):
 
     supabase_url: str | None = None
     supabase_key: str | None = None
+    supabase_prereg_url: str | None = None
+    supabase_prereg_key: str | None = None
+    supabase_prereg_table: str = "english_tech_preregistrations"
+
+    @property
+    def prereg_supabase_url(self) -> str | None:
+        return self.supabase_prereg_url or self.supabase_url
+
+    @property
+    def prereg_supabase_key(self) -> str | None:
+        return self.supabase_prereg_key or self.supabase_key
 
     @property
     def cors_origins_list(self) -> List[str]:
@@ -47,4 +58,3 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-
