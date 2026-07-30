@@ -8,6 +8,7 @@ from app.supabase_clients import (
     get_main_supabase_client,
     insert_prereg_rest_record,
     get_prereg_rest_record_by_email,
+    PreregistrationConflictError,
 )
 import logging
 
@@ -86,6 +87,11 @@ def create_pre_registro(data: PreRegistrationIn) -> PreRegistrationOut:
         
     except HTTPException:
         raise
+    except PreregistrationConflictError:
+        raise HTTPException(
+            status_code=409,
+            detail="Ya existe un pre-registro con ese correo institucional. Si quieres, podemos revisar o actualizar ese registro."
+        )
     except Exception as e:
         logger.error(f"Error en pre-registro: {str(e)}")
         raise HTTPException(

@@ -5,6 +5,10 @@ from supabase.lib.client_options import ClientOptions
 from app.config import get_settings
 
 
+class PreregistrationConflictError(Exception):
+    """Raised when a pre-registration violates a uniqueness constraint."""
+
+
 def _build_client(url: str, key: str) -> Client:
     options = ClientOptions(persist_session=False)
     return create_client(url, key, options=options)
@@ -50,6 +54,15 @@ def insert_prereg_rest_record(payload: dict) -> dict:
         json=payload,
         timeout=30,
     )
+    if response.status_code == 409:
+        try:
+            detail = response.json()
+        except ValueError:
+            detail = {}
+        raise PreregistrationConflictError(
+            detail.get("message")
+            or "Ya existe un pre-registro con ese correo institucional."
+        )
     response.raise_for_status()
     data = response.json()
     if not data:
