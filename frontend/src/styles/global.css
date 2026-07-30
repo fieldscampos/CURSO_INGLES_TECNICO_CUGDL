@@ -114,17 +114,23 @@ body {
   display: flex;
   flex-direction: column;
   line-height: 1.05;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .brand-main {
   font-size: 1rem;
   font-weight: 700;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .brand-sub {
   font-size: 0.78rem;
   color: var(--text-secondary);
   letter-spacing: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .brand:hover {
@@ -178,20 +184,20 @@ body {
 
   .brand {
     gap: 10px;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .brand-icon-img {
-    width: 124px;
-    height: 48px;
+    width: 112px;
+    height: 44px;
   }
 
   .brand-main {
-    font-size: 0.92rem;
+    font-size: 0.84rem;
   }
 
   .brand-sub {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
   }
 
   .nav-actions {
@@ -363,7 +369,7 @@ label {
   color: var(--text-primary);
 }
 
-input,
+input:not([type='radio']):not([type='checkbox']),
 textarea,
 select {
   border: 1px solid var(--border-subtle);
@@ -376,7 +382,7 @@ select {
   transition: all var(--transition-fast);
 }
 
-input:focus,
+input:not([type='radio']):not([type='checkbox']):focus,
 textarea:focus,
 select:focus {
   outline: none;
