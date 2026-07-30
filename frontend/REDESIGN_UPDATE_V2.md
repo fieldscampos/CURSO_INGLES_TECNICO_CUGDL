@@ -1,7 +1,7 @@
 # Landing Page Redesign - Update v2.0
 **Optimizado para Pre-Registro Puro | Basado en ESTRUCTURA_DE_CURSO.md**
 
-## 🎯 Cambios Principales
+## 🎯 Cambios Principales kok
 
 ### Secciones Eliminadas
 - ❌ `TestimonialsSection` - Eliminada (no es necesario para pre-registro)
